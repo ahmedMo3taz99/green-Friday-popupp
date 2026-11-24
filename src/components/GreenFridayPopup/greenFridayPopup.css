@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
+
+/* =========================================================
+   GreenFridayPopup — all classes prefixed gfp-
+   Variables live on .gfp-root (not :root) so nothing leaks
+   into the host website.
+   ========================================================= */
+
+.gfp-root {
+  --gfp-red: #E3121B;
+  --gfp-red-deep: #B00D16;
+  --gfp-red-ink: #6E0A10;
+  --gfp-rose: #F4DCE0;
+  --gfp-rose-2: #E9B9C1;
+  --gfp-white: #FFFFFF;
+  --gfp-glass: rgba(255, 255, 255, 0.22);
+  --gfp-glass-line: rgba(255, 255, 255, 0.7);
+  --gfp-overlay: rgba(45, 0, 6, 0.55);
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  font-family: 'Archivo', system-ui, sans-serif;
+  line-height: 1.2;
+  color: var(--gfp-red-ink);
+  text-align: center;
+  visibility: hidden; /* GSAP autoAlpha reveals it — no flash */
+}
+.gfp-root *,
+.gfp-root *::before,
+.gfp-root *::after { box-sizing: border-box; margin: 0; }
+
+.gfp-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--gfp-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---------- card ---------- */
+.gfp-card {
+  position: relative;
+  width: min(92vw, 480px, 66dvh);
+  max-height: 96dvh;
+  overflow: hidden;
+  container-type: inline-size; /* cqi INSIDE the card = % of card width */
+  border-radius: clamp(20px, 5vw, 32px);
+  background:
+    radial-gradient(60% 45% at 15% 10%, rgba(255, 255, 255, 0.75), transparent 70%),
+    radial-gradient(55% 40% at 90% 55%, rgba(227, 18, 27, 0.2), transparent 70%),
+    radial-gradient(70% 50% at 10% 90%, var(--gfp-rose-2), transparent 70%),
+    var(--gfp-rose);
+  box-shadow: 0 30px 80px rgba(110, 10, 16, 0.35);
+}
+.gfp-card::after { /* film grain */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.gfp-inner { position: relative; z-index: 1; padding: 9cqi 6cqi 7cqi; }
+
+/* ---------- close ---------- */
+.gfp-close {
+  position: absolute;
+  top: 3.5cqi;
+  right: 3.5cqi;
+  z-index: 10;
+  width: 9cqi;
+  height: 9cqi;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--gfp-glass-line);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--gfp-red-ink);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.gfp-close:hover { background: rgba(255, 255, 255, 0.7); transform: rotate(90deg); }
+.gfp-close:focus-visible { outline: 2px solid var(--gfp-red); outline-offset: 2px; }
+.gfp-close svg { width: 40%; height: 40%; }
+
+/* ---------- headings ---------- */
+.gfp-eyebrow { font-size: 5.6cqi; font-weight: 500; font-stretch: 125%; overflow: hidden; }
+.gfp-char { display: inline-block; white-space: pre; }
+.gfp-headline {
+  margin-top: 1cqi;
+  font-size: 10.4cqi;
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--gfp-red);
+  white-space: nowrap;
+}
+.gfp-mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.06em; }
+.gfp-word { display: inline-block; }
+
+/* ---------- envelope ---------- */
+.gfp-env {
+  position: relative;
+  width: 80cqi;
+  aspect-ratio: 1.45;
+  margin: 24cqi auto 0;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.gfp-env__back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 3cqi;
+  background: var(--gfp-glass);
+  border: 1px solid var(--gfp-glass-line);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.gfp-env__flap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 38%;
+  z-index: 5;
+  transform-origin: top center;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.25));
+  will-change: transform;
+}
+.gfp-env__front {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30%;
+  bottom: 0;
+  z-index: 3;
+  border-radius: 0 0 3cqi 3cqi;
+  clip-path: polygon(0 0, 50% 46%, 100% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.12));
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.gfp-env__lines {
+  position: absolute;
+  left: 0;
+  top: 30%;
+  z-index: 4;
+  width: 100%;
+  height: 70%;
+  pointer-events: none;
+}
+.gfp-env__lines path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- voucher ---------- */
+.gfp-voucher {
+  position: absolute;
+  left: 10%;
+  top: 14%;
+  width: 80%;
+  height: 80%;
+  z-index: 2;
+  padding: 3cqi 4cqi;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 2.4cqi;
+  background: linear-gradient(160deg, var(--gfp-red), var(--gfp-red-deep));
+  color: var(--gfp-white);
+  will-change: transform;
+  -webkit-mask:
+    radial-gradient(circle 2.6cqi at 0 40%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 2.6cqi at 100% 40%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 2.6cqi at 0 40%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 2.6cqi at 100% 40%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+.gfp-voucher__label {
+  font-size: 4cqi;
+  font-weight: 700;
+  font-stretch: 125%;
+  letter-spacing: 0.08em;
+  color: rgba(110, 10, 16, 0.45);
+}
+.gfp-voucher__row { display: flex; align-items: flex-end; gap: 2cqi; margin-top: 2cqi; white-space: nowrap; }
+.gfp-voucher__main {
+  font-size: 8.4cqi;
+  font-weight: 800;
+  font-stretch: 110%;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.gfp-voucher__main small { font-size: 0.55em; vertical-align: 0.35em; margin-right: 0.1em; }
+.gfp-voucher__free { font-size: 4.6cqi; font-weight: 700; line-height: 1; padding-bottom: 0.4cqi; }
+.gfp-voucher__fine { margin-top: 2cqi; font-size: 2.4cqi; opacity: 0.7; }
+
+/* ---------- badge ---------- */
+.gfp-badge {
+  position: absolute;
+  right: -5cqi;
+  bottom: -7cqi;
+  z-index: 6;
+  width: 24cqi;
+  aspect-ratio: 1;
+  will-change: transform;
+}
+.gfp-badge svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.gfp-badge svg path { fill: var(--gfp-red); stroke: rgba(255, 255, 255, 0.45); stroke-width: 0.6; }
+.gfp-badge__txt {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  color: var(--gfp-white);
+  line-height: 0.95;
+  transform: rotate(-12deg);
+}
+.gfp-badge__txt b { font-size: 6.6cqi; font-weight: 800; font-stretch: 125%; }
+.gfp-badge__txt span { font-size: 3.6cqi; font-weight: 600; letter-spacing: 0.1em; }
+
+/* ---------- CTA ---------- */
+.gfp-cta {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  max-width: 80cqi;
+  margin: 12cqi auto 0;
+  padding: 3.8cqi;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gfp-red);
+  color: var(--gfp-white);
+  font-family: inherit;
+  font-size: 4.2cqi;
+  font-weight: 700;
+  font-stretch: 110%;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(176, 13, 22, 0.35);
+  /* hover uses `translate` (not transform) so it never fights GSAP, which animates transform */
+  transition: background 0.3s, translate 0.3s, box-shadow 0.3s;
+}
+.gfp-cta:hover {
+  background: var(--gfp-red-deep);
+  translate: 0 -2px;
+  box-shadow: 0 16px 32px rgba(176, 13, 22, 0.45);
+}
+.gfp-cta:focus-visible { outline: 2px solid var(--gfp-red-ink); outline-offset: 3px; }
+.gfp-cta__shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 35%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-120%);
+}
+.gfp-note { margin-top: 3cqi; font-size: 2.9cqi; opacity: 0.7; }
+
+/* ---------- responsive extras ---------- */
+@media (max-width: 380px) {
+  .gfp-card { width: 94vw; }
+  .gfp-badge { right: -2cqi; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .gfp-card { width: min(60vw, 66dvh); }
+}

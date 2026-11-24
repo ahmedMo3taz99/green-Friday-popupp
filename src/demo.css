@@ -1,0 +1,15 @@
+/* demo page only — not part of the popup */
+* { box-sizing: border-box; margin: 0; }
+html, body { overflow-x: hidden; }
+body { font-family: 'Archivo', system-ui, sans-serif; background: #faf7f7; color: #2a1416; min-height: 100dvh; }
+.demo-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px clamp(16px, 5vw, 64px); }
+.demo-logo { font-weight: 800; font-stretch: 125%; color: #E3121B; }
+.demo-links { display: flex; gap: 24px; font-size: 14px; opacity: .6; }
+.demo-hero { padding: clamp(40px, 10vw, 120px) clamp(16px, 5vw, 64px); max-width: 900px; }
+.demo-hero h1 { font-size: clamp(1.8rem, 7vw, 4.5rem); overflow-wrap: anywhere; font-stretch: 125%; font-weight: 800; line-height: 1; }
+.demo-hero p { margin-top: 20px; max-width: 520px; opacity: .65; line-height: 1.5; }
+.demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 0 clamp(16px, 5vw, 64px) 80px; }
+.demo-grid div { height: 180px; border-radius: 16px; background: #eee3e4; }
+.demo-replay { position: fixed; right: 16px; bottom: 16px; z-index: 50; padding: 12px 18px; border: 0; border-radius: 999px;
+  background: #2a1416; color: #fff; font: 600 14px 'Archivo', sans-serif; cursor: pointer; }
+@media (max-width: 600px) { .demo-links { display: none; } }
